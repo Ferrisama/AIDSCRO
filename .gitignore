@@ -26,6 +26,10 @@ wheels/
 # Virtual Environment
 venv/
 ENV/
+env/
+*.venv
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Data files
 *.csv
@@ -66,3 +70,7 @@ Thumbs.db
 # Specific to your project
 smart_city_data.csv
 traffic_map.html
+
+# Tensorflow
+*.dylib
+*.so
