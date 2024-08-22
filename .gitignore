@@ -1,0 +1,5 @@
+# Ignore the virtual environment folder
+venv/
+
+# Ignore the smart_city_data.csv file
+smart_city_data.csv
