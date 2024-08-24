@@ -2,11 +2,11 @@
 
 import pandas as pd
 import numpy as np
-from src.ai_model import SmartCityPredictor
+from src.ai_model import TrafficPredictor
 
 
 class ResourceOptimizer:
-    def __init__(self, predictor: SmartCityPredictor):
+    def __init__(self, predictor: TrafficPredictor):
         self.predictor = predictor
 
     def optimize_energy_consumption(self, current_data: pd.DataFrame):
@@ -47,24 +47,20 @@ class ResourceOptimizer:
             hour_data = future_data.iloc[hour]
             for feature, importance in top_features:
                 if feature == 'traffic_density' and hour_data['traffic_density'] > 0.7:
-                    strategies.append(f"Hour {hour}: Implement traffic reduction measures to decrease high traffic density ({
-                                      hour_data['traffic_density']:.2f}).")
+                    strategies.append(f"Hour {hour}: Implement traffic reduction measures to decrease high traffic density ({ hour_data['traffic_density']:.2f}).")
                 elif feature == 'air_quality_index' and hour_data['air_quality_index'] > 150:
-                    strategies.append(f"Hour {hour}: Activate air purification systems to improve poor air quality (AQI: {
-                                      hour_data['air_quality_index']}).")
+                    strategies.append(f"Hour {hour}: Activate air purification systems to improve poor air quality (AQI: { hour_data['air_quality_index']}).")
                 elif feature == 'waste_generated' and hour_data['waste_generated'] > 75:
-                    strategies.append(f"Hour {hour}: Optimize waste collection routes to manage high waste generation ({
-                                      hour_data['waste_generated']:.2f} tons).")
+                    strategies.append(f"Hour {hour}: Optimize waste collection routes to manage high waste generation ({ hour_data['waste_generated']:.2f} tons).")
                 elif feature == 'water_consumption' and hour_data['water_consumption'] > 4000:
-                    strategies.append(f"Hour {hour}: Implement water conservation measures to reduce high water consumption ({
-                                      hour_data['water_consumption']:.2f} cubic meters).")
+                    strategies.append(f"Hour {hour}: Implement water conservation measures to reduce high water consumption ({ hour_data['water_consumption']:.2f} cubic meters).")
 
         return strategies
 
 
 # Example usage
 if __name__ == "__main__":
-    predictor = SmartCityPredictor()
+    predictor = TrafficPredictor()
     predictor.train('smart_city_data.csv')
     optimizer = ResourceOptimizer(predictor)
 

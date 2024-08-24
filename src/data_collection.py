@@ -1,46 +1,64 @@
-# src/data_collection.py
-
-import random
-from datetime import datetime, timedelta
 import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import random
 
 
 class DataCollector:
     def __init__(self):
-        self.data = []
+        self.data = None
 
-    def generate_sample_data(self, days=30):
-        """Generate sample data for a smart city over a specified number of days."""
-        start_date = datetime.now() - timedelta(days=days)
-        for day in range(days):
-            current_date = start_date + timedelta(days=day)
-            for hour in range(24):
-                timestamp = current_date + timedelta(hours=hour)
-                self.data.append({
-                    'timestamp': timestamp,
-                    'energy_consumption': random.uniform(100, 500),  # kWh
-                    'traffic_density': random.uniform(0, 1),  # 0-1 scale
-                    'air_quality_index': random.randint(0, 500),  # AQI
-                    'waste_generated': random.uniform(10, 100),  # tons
-                    # cubic meters
-                    'water_consumption': random.uniform(1000, 5000),
-                })
+    def generate_sample_data(self, days=60):
+        start_date = datetime.now()
+        end_date = start_date + timedelta(days=days)
+        date_range = pd.date_range(start=start_date, end=end_date, freq='h')
+
+        locations = ['Store A', 'Store B', 'Warehouse X', 'Warehouse Y']
+
+        data = []
+        for dt in date_range:
+            for start in locations:
+                for end in locations:
+                    if start != end:
+                        data.append({
+                            'datetime': dt,
+                            'start_location': start,
+                            'end_location': end,
+                            'distance': np.random.uniform(50, 500),  # miles
+                            'traffic_density': np.random.uniform(0, 1),
+                            'weather_condition': np.random.choice(['Clear', 'Rain', 'Snow']),
+                            # Fahrenheit
+                            'temperature': np.random.uniform(0, 100),
+                            'is_holiday': np.random.choice([0, 1], p=[0.97, 0.03]),
+                            'travel_time': np.random.uniform(1, 10)  # hours
+                        })
+
+        self.data = pd.DataFrame(data)
+        self.data['hour'] = self.data['datetime'].dt.hour
+        self.data['day_of_week'] = self.data['datetime'].dt.dayofweek
+        self.data['month'] = self.data['datetime'].dt.month
+        self.data['is_weekend'] = (self.data['day_of_week'] >= 5).astype(int)
+
+        return self.data
+
+    def save_data_to_csv(self, filename='logistics_data.csv'):
+        if self.data is not None:
+            self.data.to_csv(filename, index=False)
+            print(f"Data saved to {filename}")
+        else:
+            print("No data to save. Generate sample data first.")
 
     def get_data_as_dataframe(self):
-        """Return the collected data as a pandas DataFrame."""
-        return pd.DataFrame(self.data)
-
-    def save_data_to_csv(self, filename='smart_city_data.csv'):
-        """Save the collected data to a CSV file."""
-        df = self.get_data_as_dataframe()
-        df.to_csv(filename, index=False)
-        print(f"Data saved to {filename}")
+        if self.data is None:
+            print("No data available. Generate sample data first.")
+            return pd.DataFrame()
+        return self.data
 
 
 # Example usage
 if __name__ == "__main__":
     collector = DataCollector()
-    collector.generate_sample_data(days=30)
-    df = collector.get_data_as_dataframe()
-    print(df.head())
+    data = collector.generate_sample_data(days=7)
+    print(data.head())
+    print(f"Total records: {len(data)}")
     collector.save_data_to_csv()
